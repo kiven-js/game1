@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #center {
+            text-align: center;
+        }
+
+        table {
+            border: 1px solid;
+            border-collapse: collapse;
+            background: burlywood;
+            margin: 0 auto;
+        }
+
+        td {
+            width: 40px;
+            height: 40px;
+            border: 1px solid;
+        }
+    </style>
+    <script>
+        var currentColor = 'black';
+        //页面加载
+        window.onclick = function () {
+            document.getElementById("spanColor").innerText = currentColor;
+            //得到棋盘
+            var chessboard = document.getElementById("chessboard");
+            //当你点击棋盘的时候做什么
+            chessboard.onclick = function (e) {
+                //拿到你点击的目标
+                var target = event.target;
+                var obj = e.target.nodeName;
+                if (obj === 'TD') {
+                    if (target.style.backgroundColor === 'black' || target.style.backgroundColor === 'white') {
+                        alert("这里已经有子了，不能再次落子");
+                    } else {
+                        target.style.backgroundColor = currentColor;
+                        target.style.borderRadius = '50%';
+
+
+                        var currentChess = {
+                            x: target.cellIndex,
+                            y: target.parentNode.rowIndex,
+                            color: currentColor
+                        }
+                        var flag = (currentColor == 'black' ? 'bbbbb' : 'wwwww');
+                        var tempColor = currentColor;
+
+                        if (currentColor === 'black') {
+                            currentColor = 'white';
+                        } else {
+                            currentColor = 'black';
+                        }
+                        document.getElementById('spanColor').innerText = currentColor;
+                        var tdArr = document.getElementById("chessboard").getElementsByTagName("td");
+                        // 存储棋子位置的容器，四个字符串对应横向、竖向、左上右下斜向、右上左下斜向
+                        var result = ['', '', '', ''];
+                        for (var i = 0; i <= tdArr.length - 1; i++) {
+                            var tempChess = {
+                                x: tdArr[i].cellIndex,
+                                y: tdArr[i].parentNode.rowIndex,
+                                color: '0'
+                            }
+                            if (tdArr[i].style.backgroundColor === 'black') {
+                                tempChess.color = 'b';
+                            } else if (tdArr[i].style.backgroundColor === 'white') {
+                                tempChess.color = 'w';
+                            }
+                            // 遍历时，如果该位置上有棋子，就修改color属性
+                            if (tdArr[i].style.backgroundColor == 'black') {
+                                tempChess.color = 'b';
+                            } else if (tdArr[i].style.backgroundColor == 'white') {
+                                tempChess.color = 'w';
+                            }
+
+                            // 遍历每一个位置 和 当前棋子进行比较
+                            //位于统一横线y为0，位于同一个竖线x为0
+                            // 位于同一横线上，例如：(0, 0), (1, 0), (5, 0)
+                            if (currentChess.y == tempChess.y) {
+                                result[0] += tempChess.color;
+                            }
+                            // 位于同一竖线上，例如：(0, 0), (0, 1), (0, 5)
+                            if (currentChess.x == tempChess.x) {
+                                result[1] += tempChess.color;
+                            }
+                            // 位于同一斜线上（左上至右下）
+                            // 例如：(0, 0), (1, 1), (2, 2)；
+                            //		(0, 1), (1, 2), (2, 3);(0, 2), (1, 3), (2, 4);
+                            //		(1, 0), (2, 1), (3, 2);(2, 0), (3, 1), (4, 2)；
+                            if ((currentChess.x - tempChess.x) == (currentChess.y - tempChess.y)) {
+                                result[2] += tempChess.color;
+                            }
+                            // 位于同一斜线上（右上至左下）
+                            // 例如：(14, 0), (13, 1), (12, 2);
+                            //		(13, 0), (12, 1), (11, 2);(12, 0), (11, 1), (12, 2);
+                            //		(14, 1), (13, 2), (12, 3);(14, 2), (13, 3), (12, 4);
+                            if ((currentChess.x + currentChess.y) == (tempChess.x + tempChess.y)) {
+                                result[3] += tempChess.color;
+                            }
+                        }
+                        for (var i = 0; i < result.length; i++) {
+                            // indexOf() 方法可返回某个指定的字符串值在字符串中首次出现的位置
+                            if (result[i].indexOf(flag) >= 0) {
+                                if (tempColor == 'black') {
+                                    alert('黑棋获胜！');
+                                } else if (tempColor == 'white') {
+                                    alert('白棋获胜！');
+                                }
+
+                                break;
+                            }
+                        }
+
+                    }
+                } else {
+                    return;
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="center">
+        <h3>双人对战五子棋</h3>
+        <div id="divMsg">
+            落子者为: <span id="spanColor"></span>
+        </div>
+        <table id="chessboard">
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>
